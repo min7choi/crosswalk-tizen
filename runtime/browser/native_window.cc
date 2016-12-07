@@ -174,7 +174,7 @@ void NativeWindow::Initialize() {
                                  rotation_callback,
                                  this);
 
-  if (w > h) {
+  if (w >= h) {
     natural_orientation_ = ScreenOrientation::LANDSCAPE_PRIMARY;
   } else {
     natural_orientation_ = ScreenOrientation::PORTRAIT_PRIMARY;
