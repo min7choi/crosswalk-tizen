@@ -43,6 +43,7 @@
 #include "runtime/browser/web_view.h"
 #include "runtime/browser/splash_screen.h"
 #include "extensions/common/xwalk_extension_server.h"
+#include <boost/optional/optional_io.hpp>
 
 #ifndef INJECTED_BUNDLE_PATH
 #error INJECTED_BUNDLE_PATH is not set.
@@ -220,7 +221,7 @@ WebApplication::WebApplication(
     : launched_(false),
       debug_mode_(false),
       verbose_mode_(false),
-      lang_changed_mode_(false),
+	  lang_changed_mode_(false),
       ewk_context_(
           ewk_context_new_with_injected_bundle_path(INJECTED_BUNDLE_PATH)),
       has_ownership_of_ewk_context_(true),
@@ -356,6 +357,14 @@ bool WebApplication::Initialize() {
       app_data_->setting_info()->background_vibration()) {
     ewk_context_tizen_extensible_api_string_set(
         ewk_context_, kBackgroundVibrationFeature, true);
+  }
+
+  if (app_data_->setting_info() != NULL &&
+      app_data_->setting_info()->long_polling()) {
+
+	  boost::optional <unsigned int> polling_val(app_data_->setting_info()->long_polling());
+      int *ptr =  reinterpret_cast <int *> (&polling_val.get());
+      ewk_context_session_timeout_set(ewk_context_, *ptr);
   }
 
   if (app_data_->widget_info() != NULL &&
